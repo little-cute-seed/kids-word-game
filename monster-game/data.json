@@ -18,7 +18,7 @@
     },
     {
       "game_id": 2,
-      "name": "🚂 Game 2: 顏色小火車 大冒險",
+      "name": "🚂 Game 2: 顏色小火車",
       "questions": [
         { "image": "🔴", "word": "RED", "options": ["RED", "BLUE", "YELLOW"] },
         { "image": "🔵", "word": "BLUE", "options": ["BLUE", "GREEN", "RED"] },
