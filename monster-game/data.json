@@ -2,7 +2,7 @@
   "games": [
     {
       "game_id": 1,
-      "name": "🐷 Game 1: 動物大冒險",
+      "name": "🐷 Game 1: 餵食小屁豬",
       "questions": [
         { "image": "🐱", "word": "CAT", "options": ["CAT", "DOG", "PIG"] },
         { "image": "🐶", "word": "DOG", "options": ["CAT", "DOG", "DUCK"] },
@@ -18,7 +18,7 @@
     },
     {
       "game_id": 2,
-      "name": "🚂 Game 2: 顏色火車",
+      "name": "🚂 Game 2: 顏色小火車 大冒險",
       "questions": [
         { "image": "🔴", "word": "RED", "options": ["RED", "BLUE", "YELLOW"] },
         { "image": "🔵", "word": "BLUE", "options": ["BLUE", "GREEN", "RED"] },
