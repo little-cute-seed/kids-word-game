@@ -1,162 +1,5 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kids Word & Math Game - Select Level</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        body {
-            margin: 0;
-            padding: 40px 20px;
-            background-color: #CBE6FF;
-            background-image: radial-gradient(circle at 50% 50%, #E2F0FF 0%, #BFE0FF 100%);
-            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Fredoka', cursive, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            color: #2C3E50;
-            font-size: 32px;
-            margin-bottom: 30px;
-            text-align: center;
-            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
-        }
-
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            max-width: 1100px;
-            width: 100%;
-        }
-
-        .game-card {
-            background: #FFFFFF;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .game-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-header {
-            height: 160px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .card-header.purple {
-            background-color: #9C82FA;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
-            background-size: 16px 16px;
-        }
-
-        .card-header.teal {
-            background-color: #4AD3C6;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
-            background-size: 16px 16px;
-        }
-
-        .card-header.orange {
-            background-color: #FFAE42;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
-            background-size: 16px 16px;
-        }
-
-        .card-icon {
-            font-size: 64px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
-        }
-
-        .hot-badge {
-            position: absolute;
-            top: 14px;
-            right: 16px;
-            background-color: #FF5252;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 900;
-            box-shadow: 0 3px 6px rgba(255, 82, 82, 0.4);
-        }
-
-        .card-body {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .card-title {
-            font-size: 22px;
-            font-weight: 900;
-            color: #1E293B;
-            margin: 0 0 16px 0;
-            line-height: 1.3;
-        }
-
-        .tag-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .tag-blue {
-            background-color: #EEF4FF;
-            color: #4F46E5;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .tag-orange {
-            background-color: #FFF6ED;
-            color: #EA580C;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .card-desc {
-            font-size: 13px;
-            color: #64748B;
-            line-height: 1.5;
-            margin-top: auto;
-        }
-    </style>
-</head>
-<body>
-
-    <h1>🎮 選擇遊戲關卡 Choose a Game</h1>
-
-    <div class="game-grid">
-
-        <!-- Game 1 -->
-        <a href="./monster-game/?game=1" class="game-card">
+<!-- Game 1: 餵食小屁豬 -->
+        <a href="./monster-game/index.html?game=1" class="game-card">
             <div class="card-header purple">
                 <span class="hot-badge">Hot</span>
                 <div class="card-icon">🐷</div>
@@ -175,8 +18,8 @@
             </div>
         </a>
 
-        <!-- Game 2 -->
-        <a href="./monster-game/?game=2" class="game-card">
+        <!-- Game 2: 顏色小火車 -->
+        <a href="./monster-game/index.html?game=2" class="game-card">
             <div class="card-header teal">
                 <div class="card-icon">🚂</div>
             </div>
@@ -194,8 +37,8 @@
             </div>
         </a>
 
-        <!-- Game 3 -->
-        <a href="./monster-game/?game=3" class="game-card">
+        <!-- Game 3: 數字火箭升空 -->
+        <a href="./monster-game/index.html?game=3" class="game-card">
             <div class="card-header orange">
                 <div class="card-icon">🚀</div>
             </div>
@@ -212,8 +55,3 @@
                 </div>
             </div>
         </a>
-
-    </div>
-
-</body>
-</html>
