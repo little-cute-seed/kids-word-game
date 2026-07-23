@@ -3,176 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小怪物的英文冒險 - 關卡選擇</title>
+    <title>Kids Word & Math Game - 選關頁面</title>
     <style>
-        /* 1. 全域樣式：設定背景顏色與 Comic Sans 字體 */
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
         body {
             margin: 0;
             padding: 20px;
-            background-color: #E3F2FD; /* 藍色淺色背景，像截圖那樣 */
-            font-family: 'Comic Sans MS', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* 頂部標題 (像 MMathWorld 的位置) */
-        .page-title {
-            color: #FF6B6B;
-            font-size: 36px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        /* 2. 網格容器 (Grid Container)：控制卡片怎麼排列 */
-        .level-grid {
-            display: grid;
-            /* 關鍵！這行代表「自動填滿，卡片最小 300px，間距 20px」 */
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px; /* 卡片之間的間距 */
-            width: 100%;
-            max-width: 1200px; /* 限制最大寬度，不讓卡片撐太寬 */
-            padding: 20px;
-        }
-
-        /* 3. 卡片樣式 (Level Card)：每個關卡的盒子 */
-        .level-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden; /* 確保裡面的圖片圓角正確 */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* 加上柔和的陰影 */
-            transition: transform 0.2s ease; /* 加上滑鼠滑過的動畫 */
-            cursor: pointer;
-            text-decoration: none; /* 取消超連結底線 */
-            color: inherit; /* 使用預設字體顏色 */
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* 4. 卡片滑過效果：微微放大 */
-        .level-card:hover {
-            transform: translateY(-5px); /* 向上浮起 */
-        }
-
-        /* 5. 卡片上半部：封面圖片 */
-        .card-cover {
-            height: 180px;
+            background-color: #F4F9F9;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 80px; /* Emoji 的大小 */
-            color: white;
-            position: relative;
+            min-height: 100vh;
         }
 
-        /* 不同關卡的不同背景色 */
-        .cover-1 { background-color: #CE93D8; } /* 紫色 */
-        .cover-2 { background-color: #81D4FA; } /* 藍色 */
-        .cover-3 { background-color: #FFCC80; } /* 橘色 */
+        .menu-container {
+            background: white;
+            border-radius: 25px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
+        }
 
-        /* 6. 卡片下半部：內容區域 */
-        .card-content {
-            padding: 20px;
-            flex-grow: 1;
+        h1 {
+            color: #FF6B6B;
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        .game-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 18px;
         }
 
-        .level-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        /* 標籤樣式 (Tags) */
-        .tag-container {
+        .game-card {
             display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        .tag {
-            background-color: #F0F8FF;
-            color: #4D96FF;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-        }
-
-        .level-desc {
-            font-size: 14px;
-            color: #666;
-            line-height: 1.4;
-        }
-
-        /* 7. 開始按鈕 (像截圖的 Play Now) */
-        .play-btn {
-            background-color: #26A69A; /* 截圖的綠色 */
-            color: white;
-            text-align: center;
-            padding: 12px;
+            align-items: center;
+            padding: 18px;
             border-radius: 20px;
-            margin-top: auto; /* 推到最底部 */
+            text-decoration: none;
+            color: white;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 20px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .game-card:active {
+            transform: scale(0.98);
+        }
+
+        .game-card .icon {
+            font-size: 40px;
+            margin-right: 15px;
+        }
+
+        .game-card .info {
+            text-align: left;
+        }
+
+        .game-card .info .title {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .game-card .info .desc {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: normal;
+        }
+
+        /* 遊戲卡片主題顏色 */
+        .game-1 {
+            background-color: #FF6B6B;
+        }
+
+        .game-2 {
+            background-color: #4D96FF;
+        }
+
+        .game-3 {
+            background-color: #6BCB77;
         }
     </style>
 </head>
 <body>
 
-    <h1 class="page-title">🐷 小屁豬學習 - 選擇遊戲</h1>
-
-    <!-- 網格容器 (這是大的盒子) -->
-    <div class="level-grid">
-
-       <!-- Game 1 卡片 -->
-<a href="https://little-cute-seed.github.io/kids-word-game/monster-game/?game=1" class="level-card">
-    <div class="card-cover cover-1">🐷</div>
-    <div class="card-content">
-        <div class="level-title">Game 1: Animal World</div>
-        <div class="tag-container"><span class="tag">動物篇</span></div>
-        <div class="level-desc">小豬想要認識動物！快來挑戰 10 道動物題目吧！</div>
-        <div class="play-btn">Play Now</div>
-    </div>
-</a>
-
-<!-- Game 2 卡片 -->
-<a href="https://little-cute-seed.github.io/kids-word-game/monster-game/?game=2" class="level-card">
-    <div class="card-cover cover-2">🚂</div>
-    <div class="card-content">
-        <div class="level-title">Game 2: Color Train</div>
-        <div class="tag-container"><span class="tag">顏色篇</span></div>
-        <div class="level-desc">搭乘顏色火車出發！學習 10 個英文顏色單字。</div>
-        <div class="play-btn">Play Now</div>
-    </div>
-</a>
-
-        <!-- 第 3 個關卡卡片 -->
-        <a href="index.html?stage=3" class="level-card">
-            <!-- 上半部封面 (橘色) -->
-            <div class="card-cover cover-3">
-                ⚔️
-            </div>
-            <!-- 下半部內容 -->
-            <div class="card-content">
-                <div class="level-title">Level 3: Ninja Slice</div>
-                
-                <div class="tag-container">
-                    <span class="tag">進階單字</span>
-                    <span class="tag">動詞</span>
+    <div class="menu-container">
+        <h1>🎮 小怪物樂園</h1>
+        
+        <div class="game-list">
+            <!-- 🐷 Game 1 -->
+            <a href="./monster-game/?game=1" class="game-card game-1">
+                <span class="icon">🐷</span>
+                <div class="info">
+                    <div class="title">Game 1</div>
+                    <div class="desc">餵食小屁豬 (英文單字)</div>
                 </div>
+            </a>
 
-                <div class="level-desc">
-                    快來切開答案吧！練習常用的英文動詞。
+            <!-- 🚂 Game 2 -->
+            <a href="./monster-game/?game=2" class="game-card game-2">
+                <span class="icon">🚂</span>
+                <div class="info">
+                    <div class="title">Game 2</div>
+                    <div class="desc">顏色小火車 (顏色單字)</div>
                 </div>
+            </a>
 
-                <div class="play-btn">Play Now</div>
-            </div>
-        </a>
-
-        <!-- 你可以繼續複製貼上更多的 <a href="..." class="level-card"> ... </a> 來增加關卡 -->
-
+            <!-- 🚀 Game 3 (全新新增) -->
+            <a href="./monster-game/?game=3" class="game-card game-3">
+                <span class="icon">🚀</span>
+                <div class="info">
+                    <div class="title">Game 3</div>
+                    <div class="desc">數字火箭升空 (數字序列)</div>
+                </div>
+            </a>
+        </div>
     </div>
 
 </body>
