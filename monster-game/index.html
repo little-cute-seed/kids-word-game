@@ -2,8 +2,8 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kids Word & Math Game - Select Level</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kids Game</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,217 +13,401 @@
 
         body {
             margin: 0;
-            padding: 40px 20px;
-            background-color: #CBE6FF;
-            background-image: radial-gradient(circle at 50% 50%, #E2F0FF 0%, #BFE0FF 100%);
-            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Fredoka', cursive, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            color: #2C3E50;
-            font-size: 32px;
-            margin-bottom: 30px;
-            text-align: center;
-            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
-        }
-
-        /* 🎴 3-Column Grid Layout */
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            max-width: 1100px;
-            width: 100%;
-        }
-
-        /* Card Container */
-        .game-card {
-            background: #FFFFFF;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .game-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.12);
-        }
-
-        /* Banner Pattern Header */
-        .card-header {
-            height: 160px;
-            position: relative;
+            padding: 20px;
+            background-color: #E8F0FE;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Level 1 Purple Dotted Pattern */
-        .card-header.purple {
-            background-color: #9C82FA;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
-            background-size: 16px 16px;
-        }
-
-        /* Level 2 Teal Dotted Pattern */
-        .card-header.teal {
-            background-color: #4AD3C6;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
-            background-size: 16px 16px;
-        }
-
-        /* Level 3 Orange Dotted Pattern */
-        .card-header.orange {
-            background-color: #FFAE42;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
-            background-size: 16px 16px;
-        }
-
-        .card-icon {
-            font-size: 64px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
-        }
-
-        /* Hot Badge */
-        .hot-badge {
+        /* 🏠 左上角 Home 按鈕 */
+        .home-btn {
             position: absolute;
-            top: 14px;
-            right: 16px;
-            background-color: #FF5252;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
+            top: 20px;
+            left: 20px;
+            background-color: #FFFFFF;
+            color: #FF6B6B;
+            border: 3px solid #FF6B6B;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        .home-btn:active {
+            transform: scale(0.95);
+        }
+
+        #game-container {
+            background: #FFFFFF;
+            border-radius: 30px;
+            padding: 25px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+            text-align: center;
+            position: relative;
+        }
+
+        #stage-title {
+            color: #4A90E2;
+            font-size: 26px;
+            margin: 0 0 10px 0;
             font-weight: 900;
-            box-shadow: 0 3px 6px rgba(255, 82, 82, 0.4);
         }
 
-        /* Card Content Body */
-        .card-body {
-            padding: 24px;
+        /* 🚀 故事區塊 */
+        #story-zone {
+            font-size: 60px;
+            margin: 10px 0;
+            min-height: 70px;
             display: flex;
-            flex-direction: column;
-            flex-grow: 1;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.4s ease;
         }
 
-        .card-title {
-            font-size: 22px;
-            font-weight: 900;
-            color: #1E293B;
-            margin: 0 0 16px 0;
-            line-height: 1.3;
+        .bounce-anim {
+            animation: bounce 0.6s ease forwards;
         }
 
-        /* Tags / Badges Container */
-        .tag-container {
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* 進度條 */
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background-color: #E0E0E0;
+            border-radius: 12px;
+            margin: 10px 0 20px 0;
+            overflow: hidden;
+            border: 2px solid #FFF;
+        }
+
+        #progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #FF9F43, #FF5252);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        /* 題目核心區塊 (相容模式) */
+        #question-display {
             display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin: 15px 0;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
+            min-height: 100px;
         }
 
-        .tag-blue {
-            background-color: #EEF4FF;
-            color: #4F46E5;
-            padding: 6px 12px;
+        .big-emoji {
+            font-size: 85px;
+            line-height: 1;
+        }
+
+        .num-box {
+            width: 70px;
+            height: 70px;
+            background-color: #4D96FF;
+            color: white;
             border-radius: 16px;
-            font-size: 12px;
-            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            font-weight: 900;
+            box-shadow: 0 5px 0px #2B62C2;
         }
 
-        .tag-orange {
-            background-color: #FFF6ED;
-            color: #EA580C;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 700;
+        /* 🎯 拖放目標區 */
+        #drop-target {
+            width: 140px;
+            height: 65px;
+            border: 4px dashed #FF6B6B;
+            background-color: #FFF0F0;
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            font-weight: 900;
+            color: #FF6B6B;
+            margin: 10px auto;
+            transition: all 0.2s ease;
         }
 
-        /* Description text */
-        .card-desc {
-            font-size: 13px;
-            color: #64748B;
-            line-height: 1.5;
-            margin-top: auto;
+        #drop-target.math-mode {
+            width: 75px;
+            height: 70px;
+            font-size: 36px;
+        }
+
+        #drop-target.hovered {
+            background-color: #FFE3E3;
+            transform: scale(1.05);
+        }
+
+        /* 選項區 */
+        #options-zone {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .word-card {
+            background-color: #6BCB77;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 18px;
+            font-size: 24px;
+            font-weight: 900;
+            cursor: grab;
+            box-shadow: 0 5px 0px #3B9B47;
+            touch-action: none;
+            transition: transform 0.1s ease;
+        }
+
+        .word-card.math-card {
+            width: 75px;
+            height: 75px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+        }
+
+        .word-card:active {
+            cursor: grabbing;
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
 
-    <h1>🎮 選擇遊戲關卡 Choose a Game</h1>
+    <a href="../game-select.html" class="home-btn">⬅️ Home</a>
 
-    <div class="game-grid">
+    <div id="game-container">
+        <div id="stage-title">關卡載入中...</div>
+        <div id="story-zone">🚀</div>
 
-        <!-- Game 1: 餵食小屁豬 -->
-        <a href="./monster-game/index.html?game=1" class="game-card">
-            <div class="card-header purple">
-                <span class="hot-badge">Hot</span>
-                <div class="card-icon">🐷</div>
-            </div>
-            <div class="card-body">
-                <h2 class="card-title">Level 1: 餵食小屁豬</h2>
-                <div class="tag-container">
-                    <span class="tag-blue">英文單字拼音</span>
-                    <span class="tag-orange">Word Spelling</span>
-                    <span class="tag-blue">動物與食物</span>
-                    <span class="tag-orange">Animals & Food</span>
-                </div>
-                <div class="card-desc">
-                    小屁豬肚子餓了！拖拽正確的英文單字來餵食牠吧！ Feed the hungry pig by matching words.
-                </div>
-            </div>
-        </a>
+        <div class="progress-bar-container">
+            <div id="progress"></div>
+        </div>
 
-        <!-- Game 2: 顏色小火車 -->
-        <a href="./monster-game/index.html?game=2" class="game-card">
-            <div class="card-header teal">
-                <div class="card-icon">🚂</div>
-            </div>
-            <div class="card-body">
-                <h2 class="card-title">Level 2: 顏色小火車</h2>
-                <div class="tag-container">
-                    <span class="tag-blue">顏色與形狀認知</span>
-                    <span class="tag-orange">Colors & Shapes</span>
-                    <span class="tag-blue">基礎詞彙</span>
-                    <span class="tag-orange">Basic Vocabulary</span>
-                </div>
-                <div class="card-desc">
-                    小火車要出發了！幫忙配對正確的顏色卡片吧！ Help the train collect color cards.
-                </div>
-            </div>
-        </a>
-
-        <!-- Game 3: 數字火箭升空 -->
-        <a href="./monster-game/index.html?game=3" class="game-card">
-            <div class="card-header orange">
-                <div class="card-icon">🚀</div>
-            </div>
-            <div class="card-body">
-                <h2 class="card-title">Level 3: 數字火箭升空</h2>
-                <div class="tag-container">
-                    <span class="tag-blue">數字規律與填空</span>
-                    <span class="tag-orange">Number Sequences</span>
-                    <span class="tag-blue">基礎數學邏輯</span>
-                    <span class="tag-orange">Math Logic</span>
-                </div>
-                <div class="card-desc">
-                    找出缺少的數字，填補序列讓火箭發射升空！ Fill in the missing number to launch the rocket!
-                </div>
-            </div>
-        </a>
-
+        <div id="question-display"></div>
+        <div id="drop-target">拖到這裡</div>
+        <div id="options-zone"></div>
     </div>
 
+    <script>
+    let currentGame = null; 
+    let currentQuestionIndex = 0;
+    let draggedText = "";
+    let draggedElement = null;
+
+    // 🎲 Fisher-Yates 洗牌演算法
+    function shuffleArray(array) {
+        let arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    // 1. 初始化遊戲
+    async function initGame() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameParam = parseInt(urlParams.get('game')) || 1;
+
+        try {
+            const response = await fetch('data.json?v=' + new Date().getTime());
+            if (!response.ok) throw new Error("Network response was not ok");
+            const gameData = await response.json();
+            currentGame = gameData.games.find(g => g.game_id === gameParam);
+        } catch (error) {
+            console.warn("無法讀取外部 data.json，改用內建備用資料", error);
+        }
+
+        // 萬一 JSON 抓取失敗的備用邏輯
+        if (!currentGame) {
+            currentGame = {
+                game_id: gameParam,
+                name: gameParam === 3 ? "🚀 數字火箭升空" : (gameParam === 2 ? "🚂 顏色小火車" : "🐷 餵食小屁豬"),
+                questions: gameParam === 3 ? [
+                    { sequence: [5, "_", 7], answer: 6, options: [6, 4, 8] },
+                    { sequence: [10, 11, "_"], answer: 12, options: [12, 13, 9] }
+                ] : [
+                    { image: "🐱", word: "CAT", options: ["CAT", "DOG", "PIG"] },
+                    { image: "🐶", word: "DOG", options: ["CAT", "DOG", "DUCK"] }
+                ]
+            };
+        }
+
+        currentQuestionIndex = 0;
+        updateUI();
+    }
+
+    // 2. 更新畫面 UI
+    function updateUI() {
+        if (!currentGame || !currentGame.questions) return;
+
+        const totalQ = currentGame.questions.length;
+        const question = currentGame.questions[currentQuestionIndex];
+        const isMathGame = currentGame.game_id === 3 || question.sequence;
+
+        // 更新標題與進度條
+        document.getElementById('stage-title').innerText = `${currentGame.name} (${currentQuestionIndex + 1}/${totalQ})`;
+        document.getElementById('progress').style.width = ((currentQuestionIndex + 1) / totalQ * 100) + "%";
+        
+        // 更新故事圖案
+        const storyZone = document.getElementById('story-zone');
+        if (currentGame.game_id === 1) storyZone.innerText = "🐷 🥖";
+        else if (currentGame.game_id === 2) storyZone.innerText = "🚂 🌲";
+        else storyZone.innerText = "🚀 👾";
+
+        const qDisplay = document.getElementById('question-display');
+        const dropTarget = document.getElementById('drop-target');
+        const optionsZone = document.getElementById('options-zone');
+
+        qDisplay.innerHTML = "";
+        optionsZone.innerHTML = "";
+
+        // 🎮 重置 Target
+        dropTarget.innerText = "拖到這裡";
+        dropTarget.style.borderColor = "#FF6B6B";
+        dropTarget.style.backgroundColor = "#FFF0F0";
+        dropTarget.style.color = "#FF6B6B";
+
+        if (isMathGame) {
+            // 數學模式 (Game 3)
+            dropTarget.classList.add('math-mode');
+            question.sequence.forEach(item => {
+                if (item === "_") {
+                    qDisplay.appendChild(dropTarget);
+                } else {
+                    const numBox = document.createElement('div');
+                    numBox.className = 'num-box';
+                    numBox.innerText = item;
+                    qDisplay.appendChild(numBox);
+                }
+            });
+        } else {
+            // 文字模式 (Game 1 & 2)
+            dropTarget.classList.remove('math-mode');
+            const emojiBox = document.createElement('div');
+            emojiBox.className = 'big-emoji';
+            emojiBox.innerText = question.image;
+            qDisplay.appendChild(emojiBox);
+            document.getElementById('game-container').insertBefore(dropTarget, optionsZone);
+        }
+
+        // 產生選項
+        const shuffledOptions = shuffleArray(question.options);
+        shuffledOptions.forEach(opt => {
+            const card = document.createElement('div');
+            card.className = isMathGame ? 'word-card math-card' : 'word-card';
+            card.innerText = String(opt);
+            card.setAttribute('draggable', 'true');
+            
+            card.addEventListener('dragstart', () => { draggedText = String(opt); });
+            card.addEventListener('touchstart', (e) => { 
+                draggedText = String(opt); 
+                draggedElement = card;
+            }, {passive: true});
+            
+            card.addEventListener('touchmove', handleTouchMove, {passive: false});
+            card.addEventListener('touchend', handleTouchEnd);
+
+            optionsZone.appendChild(card);
+        });
+    }
+
+    // 拖放監聽
+    const dropTarget = document.getElementById('drop-target');
+    dropTarget.addEventListener('dragover', (e) => { e.preventDefault(); dropTarget.classList.add('hovered'); });
+    dropTarget.addEventListener('dragleave', () => { dropTarget.classList.remove('hovered'); });
+    dropTarget.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropTarget.classList.remove('hovered');
+        checkAnswer(draggedText);
+    });
+
+    function handleTouchMove(e) {
+        e.preventDefault();
+        if (!draggedElement) return;
+        const touch = e.touches[0];
+        draggedElement.style.position = 'fixed';
+        draggedElement.style.left = (touch.clientX - 35) + 'px';
+        draggedElement.style.top = (touch.clientY - 35) + 'px';
+        draggedElement.style.zIndex = '1000';
+    }
+
+    function handleTouchEnd(e) {
+        if (!draggedElement) return;
+        const touch = e.changedTouches[0];
+        const targetRect = dropTarget.getBoundingClientRect();
+
+        draggedElement.style.position = 'static';
+        draggedElement.style.zIndex = 'auto';
+
+        if (touch.clientX >= targetRect.left && touch.clientX <= targetRect.right &&
+            touch.clientY >= targetRect.top && touch.clientY <= targetRect.bottom) {
+            checkAnswer(draggedText);
+        }
+        draggedElement = null;
+    }
+
+    // 檢查答案
+    function checkAnswer(selectedVal) {
+        const question = currentGame.questions[currentQuestionIndex];
+        const correctAnswer = String(question.answer || question.word);
+        const storyZone = document.getElementById('story-zone');
+
+        if (selectedVal.toUpperCase() === correctAnswer.toUpperCase()) {
+            dropTarget.innerText = "✓ " + selectedVal;
+            dropTarget.style.borderColor = "#6BCB77";
+            dropTarget.style.backgroundColor = "#E8F8E8";
+            dropTarget.style.color = "#6BCB77";
+            
+            storyZone.classList.add('bounce-anim');
+            
+            setTimeout(() => {
+                storyZone.classList.remove('bounce-anim');
+                currentQuestionIndex++;
+                
+                if (currentQuestionIndex >= currentGame.questions.length) {
+                    alert(`🏆 恭喜完成 ${currentGame.name}！`);
+                    window.location.href = "../game-select.html";
+                } else {
+                    updateUI();
+                }
+            }, 700);
+        } else {
+            dropTarget.innerText = "💪🏻 再試一次";
+            dropTarget.style.borderColor = "#FF4136";
+            dropTarget.style.color = "#FF4136";
+        }
+    }
+
+    initGame();
+</script>
 </body>
 </html>
