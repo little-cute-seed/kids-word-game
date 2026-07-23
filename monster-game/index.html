@@ -217,10 +217,36 @@
         dropTarget.style.color = "#AAA";
 
         // 清空並重新產生選項卡片
+        // 清空並重新產生選項卡片
         const optionsZone = document.getElementById('options-zone');
         optionsZone.innerHTML = "";
 
-        question.options.forEach(opt => {
+        // 🎲 關鍵：將 options 複製一份並進行隨機洗牌
+        const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
+
+        // 使用洗牌後的 shuffledOptions 來產生卡片
+        shuffledOptions.forEach(opt => {
+            const card = document.createElement('div');
+            card.className = 'word-card';
+            card.innerText = opt.toLowerCase(); // 顯示小寫
+            card.setAttribute('draggable', 'true');
+            
+            // 電腦滑鼠拖拽
+            card.addEventListener('dragstart', () => { 
+                draggedText = opt; 
+            });
+            
+            // iPad 手指觸控
+            card.addEventListener('touchstart', (e) => { 
+                draggedText = opt; 
+                draggedElement = card;
+            }, {passive: true});
+            
+            card.addEventListener('touchmove', handleTouchMove, {passive: false});
+            card.addEventListener('touchend', handleTouchEnd);
+
+            optionsZone.appendChild(card);
+        });
             const card = document.createElement('div');
             card.className = 'word-card';
             card.innerText = opt.toLowerCase(); // 顯示小寫
