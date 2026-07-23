@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小怪物的英文冒險</title>
+    <style>
+        /* 適合兒童的活潑 UI 風格 */
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
+            font-family: 'Comic Sans MS', 'Bubblegum Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #game-container {
+            width: 90vw;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 30px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 5px solid #FFF;
+        }
+
+        h2 { color: #FF6B6B; font-size: 28px; margin: 5px 0; text-shadow: 2px 2px #FFF; }
+        
+        /* 10格完美的進度條 */
+        .progress-bar-container {
+            width: 100%;
+            height: 25px;
+            background-color: #DDD;
+            border-radius: 15px;
+            margin: 5px 0;
+            overflow: hidden;
+            border: 3px solid #FFF;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #4FAF44, #84CC16);
+            transition: width 0.3s ease;
+        }
+
+        /* 故事線視覺回饋區 */
+        #story-zone {
+    font-size: 40px;
+    margin: 0;           /* 👈 外距歸零 */
+    padding: 0;          /* 👈 內距歸零 */
+    min-height: 0;       /* 👈 取消原本的 120px 最小高度 */
+    line-height: 1;      /* 👈 關鍵！把 Emoji 的行高縮到最小，消除上下多餘空白 */
+    transition: transform 0.2s ease;
+}
+        .monster-bounce { transform: scale(1.2); }
+
+        /* 題目顯示區 */
+        #question-card {
+            font-size: 100px;
+            margin: 10px 0;
+        }
+
+        /* 接收目標框 */
+        #drop-target {
+            width: 200px;
+            height: 80px;
+            border: 4px dashed #FF6B6B;
+            border-radius: 20px;
+            margin: 20px auto;
+            background: rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #AAA;
+        }
+        #drop-target.hovered { background: #FFD3B6; scale: 1.05; }
+
+        /* 答案大按鈕區 (適合觸控) */
+        #options-zone {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .word-card {
+            padding: 15px 15px;
+            font-size: 60px;
+            font-weight: bold;
+            background: #4D96FF;
+            color: white;
+            border-radius: 20px;
+            cursor: grab;
+            box-shadow: 0 6px #2772DB;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000; /* Outline 邊框 */
+            touch-action: none; /* 防止 iPad 頁面跟著滾動 */
+        }
+        .word-card:active { cursor: grabbing; }
+
+        /* 轉場/廣告插槽預留位置 */
+        #ad-placeholder { display: none; margin: 20px; font-size: 18px; color: #666; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <!-- 1. 標題 -->
+    <h2 id="stage-title">關卡載入中...</h2>
+    
+    <!-- 2. 小豬與麵包 -->
+    <div id="story-zone">👾</div> 
+
+    <!-- 3. 進度條 -->
+    <div class="progress-bar-container">
+        <div id="progress" class="progress-bar"></div>
+    </div>
+    
+    <!-- 4. 題目圖片 -->
+    <div id="question-card">🐱</div>
+    
+    <!-- 5. 拖放目標框 -->
+    <div id="drop-target">拖到這裡</div>
+    
+    <!-- 6. 答案選項 -->
+    <div id="options-zone"></div>
+
+    <!-- 7. 廣告預留 -->
+    <div id="ad-placeholder">【廣告預留插槽 - 關卡過場】</div>
+</div>
+
+<script>
+    let gameData = null;
+    let currentStageIndex = 0;
+    let currentQuestionIndex = 0;
+    let draggedText = "";
+
+    // 1. 初始化：從 JSON 載入資料
+    async function initGame() {
+        try {
+            const response = await fetch('data.json');
+            gameData = await response.json();
+            loadStage();
+        } catch (error) {
+            console.error("資料載入失敗:", error);
+            document.getElementById('stage-title').innerText = "載入失敗，請檢查 data.json";
+        }
+    }
+
+    // 2. 載入關卡
+    function loadStage() {
+        if (currentStageIndex >= gameData.stages.length) {
+            showFinalCelebration();
+            return;
+        }
+        currentQuestionIndex = 0;
+        updateUI();
+    }
+
+    // 3. 更新畫面 UI
+    function updateUI() {
+        const stage = gameData.stages[currentStageIndex];
+        const question = stage.questions[currentQuestionIndex];
+        
+        // 更新標題與進度條 (10題制)
+        document.getElementById('stage-title').innerText = `${stage.name} (${currentQuestionIndex + 1}/10)`;
+        document.getElementById('progress').style.width = (currentQuestionIndex / 10) * 100 + "%";
+        
+        // 更新題目圖片 (Emoji)
+        document.getElementById('question-card').innerText = question.image;
+        
+        // 更新故事線狀態
+        const storyZone = document.getElementById('story-zone');
+        if (stage.stage_id === 1) {
+            storyZone.innerText = "🐷🥖"; // 第一關：小屁豬與麵包
+        } else if (stage.stage_id === 2) {
+            storyZone.innerText = "🚂 🌲"; // 第二關：火車旅行
+        }
+
+        // 清空並重新渲染答案卡
+        const optionsZone = document.getElementById('options-zone');
+        optionsZone.innerHTML = "";
+        document.getElementById('drop-target').innerText = "拖到這裡";
+        document.getElementById('drop-target').style.borderColor = "#FF6B6B";
+
+        question.options.forEach(opt => {
+            const card = document.createElement('div');
+            card.className = 'word-card';
+            card.innerText = opt.toLowerCase(); // 一律小寫
+            card.setAttribute('draggable', 'true');
+            
+            // 綁定拖拽事件 (Mac 滑鼠)
+            card.addEventListener('dragstart', (e) => { draggedText = opt; });
+            
+            // 綁定觸控事件 (iPad 手指觸控優化)
+            card.addEventListener('touchstart', (e) => { draggedText = opt; }, {passive: true});
+            card.addEventListener('touchmove', handleTouchMove, {passive: false});
+            card.addEventListener('touchend', handleTouchEnd);
+
+            optionsZone.appendChild(card);
+        });
+    }
+
+    // 4. 處理 Mac 滑鼠拖放邏輯
+    const dropTarget = document.getElementById('drop-target');
+    dropTarget.addEventListener('dragover', (e) => { e.preventDefault(); dropTarget.classList.add('hovered'); });
+    dropTarget.addEventListener('dragleave', () => { dropTarget.classList.remove('hovered'); });
+    dropTarget.addEventListener('drop', () => {
+        dropTarget.classList.remove('hovered');
+        checkAnswer(draggedText);
+    });
+
+    // 5. 處理 iPad 觸控拖放相容性
+    function handleTouchMove(e) {
+        e.preventDefault(); // 阻止 iPad 畫面滾動
+        const touch = e.touches[0];
+        // 讓被拖拽的卡片視覺上跟著手指（進階優化可加入，此處先記錄手指位置）
+    }
+
+    function handleTouchEnd(e) {
+        const touch = e.changedTouches[0];
+        const targetRect = dropTarget.getBoundingClientRect();
+        
+        // 判斷手指放開的位置是不是在目標框之內
+        if (touch.clientX >= targetRect.left && touch.clientX <= targetRect.right &&
+            touch.clientY >= targetRect.top && touch.clientY <= targetRect.bottom) {
+            checkAnswer(draggedText);
+        }
+    }
+
+    // 6. 檢查答案與視覺回饋
+    function checkAnswer(selectedWord) {
+        const stage = gameData.stages[currentStageIndex];
+        const correctAnswer = stage.questions[currentQuestionIndex].word;
+        const storyZone = document.getElementById('story-zone');
+
+        if (selectedWord === correctAnswer) {
+            // 答對回饋
+            dropTarget.innerText = "✓ 正確！";
+            dropTarget.style.borderColor = "#4FAF44";
+            
+            // 故事互動特效
+            storyZone.classList.add('monster-bounce');
+            if (stage.stage_id === 1) storyZone.innerText = "😋 Yeah!";
+            else if (stage.stage_id === 2) storyZone.innerText = "🚂💨 *前進*";
+
+            setTimeout(() => {
+                storyZone.classList.remove('monster-bounce');
+                currentQuestionIndex++;
+                
+                // 判斷是否過關
+                if (currentQuestionIndex >= 10) {
+                    showStageCompleteAdTrigger();
+                } else {
+                    updateUI();
+                }
+            }, 1000);
+        } else {
+            // 答錯回饋 (溫和不懲罰)
+            dropTarget.innerText = "❌ 再試一次";
+            dropTarget.style.borderColor = "#FF4136";
+        }
+    }
+
+    // 7. 模擬關卡結束與未來廣告埋點
+    function showStageCompleteAdTrigger() {
+        alert(`🏆 恭喜通關！獲得關卡獎杯！`);
+        
+        // --- 未來廣告埋點位置 ---
+        // 這裡就是你以後呼叫 Google H5 Ads (adBreak) 的地方
+        console.log("【廣告觸發點】：展示過場廣告");
+        // -----------------------
+
+        currentStageIndex++;
+        loadStage();
+    }
+
+    function showFinalCelebration() {
+        document.getElementById('game-container').innerHTML = `
+            <h1 style="color:#FF6B6B;">👑 終極大獎！ 👑</h1>
+            <p style="font-size:100px;">🏆🎉🎈</p>
+            <p style="font-size:24px;">你太棒了！完成了所有冒險！</p>
+            <button onclick="location.reload()" style="padding:15px 30px; font-size:20px; border-radius:15px; background:#4FAF44; color:white; border:none;">再玩一次</button>
+        `;
+    }
+
+    // 啟動遊戲
+    initGame();
+</script>
+
+</body>
+</html>

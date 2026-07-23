@@ -1,0 +1,39 @@
+{
+  "theme": "Animals and Colors",
+  "stages": [
+    {
+      "stage_id": 1,
+      "name": "餵食小怪物",
+      "mechanic": "choose_1_of_2",
+      "questions": [
+        {"word": "cat", "options": ["cat", "dog"], "image": "🐱"},
+        {"word": "dog", "options": ["rat", "dog"], "image": "🐶"},
+        {"word": "pig", "options": ["pig", "cow"], "image": "🐷"},
+        {"word": "fox", "options": ["box", "fox"], "image": "🦊"},
+        {"word": "cow", "options": ["cow", "hen"], "image": "🐮"},
+        {"word": "lion", "options": ["bear", "lion"], "image": "🦁"},
+        {"word": "bear", "options": ["bear", "deer"], "image": "🐻"},
+        {"word": "duck", "options": ["fish", "duck"], "image": "🦆"},
+        {"word": "frog", "options": ["frog", "bird"], "image": "🐸"},
+        {"word": "bird", "options": ["owl", "bird"], "image": "🐦"}
+      ]
+    },
+    {
+      "stage_id": 2,
+      "name": "火車大冒險",
+      "mechanic": "choose_1_of_3",
+      "questions": [
+        {"word": "red", "options": ["red", "blue", "green"], "image": "🔴"},
+        {"word": "blue", "options": ["pink", "blue", "gray"], "image": "🔵"},
+        {"word": "pink", "options": ["gold", "pink", "red"], "image": "💗"},
+        {"word": "green", "options": ["green", "black", "white"], "image": "🟢"},
+        {"word": "black", "options": ["white", "black", "brown"], "image": "⚫"},
+        {"word": "white", "options": ["white", "clear", "silver"], "image": "⚪"},
+        {"word": "yellow", "options": ["orange", "yellow", "purple"], "image": "🟡"},
+        {"word": "purple", "options": ["purple", "indigo", "violet"], "image": "🟣"},
+        {"word": "orange", "options": ["lime", "orange", "peach"], "image": "🟠"},
+        {"word": "brown", "options": ["purple", "yellow", "brown"], "image": "🟤"}
+      ]
+    }
+  ]
+}
