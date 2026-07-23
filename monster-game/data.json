@@ -1,38 +1,35 @@
 {
-  "theme": "Animals and Colors",
-  "stages": [
+  "games": [
     {
-      "stage_id": 1,
-      "name": "餵食小屁豬",
-      "mechanic": "choose_1_of_2",
+      "game_id": 1,
+      "name": "🐷 Game 1: 動物大冒險",
       "questions": [
-        {"word": "cat", "options": ["cat", "dog"], "image": "🐱"},
-        {"word": "dog", "options": ["rat", "dog"], "image": "🐶"},
-        {"word": "pig", "options": ["pig", "cow"], "image": "🐷"},
-        {"word": "fox", "options": ["box", "fox"], "image": "🦊"},
-        {"word": "cow", "options": ["cow", "hen"], "image": "🐮"},
-        {"word": "lion", "options": ["bear", "lion"], "image": "🦁"},
-        {"word": "bear", "options": ["bear", "deer"], "image": "🐻"},
-        {"word": "duck", "options": ["fish", "duck"], "image": "🦆"},
-        {"word": "frog", "options": ["frog", "bird"], "image": "🐸"},
-        {"word": "bird", "options": ["owl", "bird"], "image": "🐦"}
+        { "image": "🐱", "word": "CAT", "options": ["CAT", "DOG", "PIG"] },
+        { "image": "🐶", "word": "DOG", "options": ["CAT", "DOG", "DUCK"] },
+        { "image": "🐷", "word": "PIG", "options": ["PIG", "COW", "BEAR"] },
+        { "image": "🐮", "word": "COW", "options": ["COW", "PIG", "SHEEP"] },
+        { "image": "🐻", "word": "BEAR", "options": ["BEAR", "LION", "CAT"] },
+        { "image": "🐰", "word": "RABBIT", "options": ["RABBIT", "DOG", "FROG"] },
+        { "image": "🐸", "word": "FROG", "options": ["FROG", "FISH", "BIRD"] },
+        { "image": "🐥", "word": "CHICK", "options": ["CHICK", "DUCK", "CAT"] },
+        { "image": "🐵", "word": "MONKEY", "options": ["MONKEY", "BEAR", "PIG"] },
+        { "image": "🦁", "word": "LION", "options": ["LION", "TIGER", "DOG"] }
       ]
     },
     {
-      "stage_id": 2,
-      "name": "火車大冒險",
-      "mechanic": "choose_1_of_3",
+      "game_id": 2,
+      "name": "🚂 Game 2: 顏色火車",
       "questions": [
-        {"word": "red", "options": ["red", "blue", "green"], "image": "🔴"},
-        {"word": "blue", "options": ["pink", "blue", "gray"], "image": "🔵"},
-        {"word": "pink", "options": ["gold", "pink", "red"], "image": "💗"},
-        {"word": "green", "options": ["green", "black", "white"], "image": "🟢"},
-        {"word": "black", "options": ["white", "black", "brown"], "image": "⚫"},
-        {"word": "white", "options": ["white", "clear", "silver"], "image": "⚪"},
-        {"word": "yellow", "options": ["orange", "yellow", "purple"], "image": "🟡"},
-        {"word": "purple", "options": ["purple", "indigo", "violet"], "image": "🟣"},
-        {"word": "orange", "options": ["lime", "orange", "peach"], "image": "🟠"},
-        {"word": "brown", "options": ["purple", "yellow", "brown"], "image": "🟤"}
+        { "image": "🔴", "word": "RED", "options": ["RED", "BLUE", "YELLOW"] },
+        { "image": "🔵", "word": "BLUE", "options": ["BLUE", "GREEN", "RED"] },
+        { "image": "💛", "word": "YELLOW", "options": ["YELLOW", "ORANGE", "PINK"] },
+        { "image": "🟢", "word": "GREEN", "options": ["GREEN", "PURPLE", "BLUE"] },
+        { "image": "🟠", "word": "ORANGE", "options": ["ORANGE", "RED", "YELLOW"] },
+        { "image": "🟣", "word": "PURPLE", "options": ["PURPLE", "PINK", "BLUE"] },
+        { "image": "🩷", "word": "PINK", "options": ["PINK", "RED", "WHITE"] },
+        { "image": "⚪", "word": "WHITE", "options": ["WHITE", "BLACK", "GRAY"] },
+        { "image": "⚫", "word": "BLACK", "options": ["BLACK", "BROWN", "WHITE"] },
+        { "image": "🤎", "word": "BROWN", "options": ["BROWN", "ORANGE", "RED"] }
       ]
     }
   ]
