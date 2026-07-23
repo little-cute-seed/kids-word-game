@@ -15,6 +15,34 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
+            position: relative;
+        }
+
+        /* 🏠 左上角 Home 按鈕樣式 */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #FFFFFF;
+            color: #4D96FF;
+            border: 2px solid #4D96FF;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .home-btn:hover {
+            background-color: #4D96FF;
+            color: white;
+            transform: scale(1.05);
         }
 
         #game-container {
@@ -25,6 +53,7 @@
             max-width: 500px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             text-align: center;
+            margin-top: 20px;
         }
 
         #stage-title {
@@ -131,6 +160,9 @@
 </head>
 <body>
 
+    <!-- 🏠 左上角返回主頁按鈕 -->
+    <a href="../game-select.html" class="home-btn">⬅️ Home</a>
+
     <div id="game-container">
         <!-- 標題 -->
         <div id="stage-title">關卡載入中...</div>
@@ -159,6 +191,16 @@
     let currentQuestionIndex = 0;
     let draggedText = "";
     let draggedElement = null;
+
+    // 🎲 專業洗牌演算法 (Fisher-Yates Shuffle)，保證 100% 隨機打亂
+    function shuffleArray(array) {
+        let arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
 
     // 1. 初始化遊戲
     async function initGame() {
@@ -220,8 +262,8 @@
         const optionsZone = document.getElementById('options-zone');
         optionsZone.innerHTML = "";
 
-        // 🎲 隨機打亂選項順序 (Random Shuffle)
-        const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
+        // 🎲 使用 Fisher-Yates 演算法進行強效洗牌
+        const shuffledOptions = shuffleArray(question.options);
 
         // 使用洗牌後的 shuffledOptions 來產生卡片
         shuffledOptions.forEach(opt => {
