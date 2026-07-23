@@ -145,17 +145,17 @@
     let draggedText = "";
 
     // 1. 初始化：從 JSON 載入資料
-    async function initGame() {
+   async function initGame() {
     try {
         const response = await fetch('data.json');
         gameData = await response.json();
         
-        // 抓取網址參數，例如 ?game=1 或 ?game=2
+        // 關鍵：這裡要抓取的參數名字是 game
         const urlParams = new URLSearchParams(window.location.search);
-        const gameParam = urlParams.get('game'); // 👈 從 stage 改成 game
+        const gameParam = urlParams.get('game'); 
         
         if (gameParam) {
-            currentStageIndex = parseInt(gameParam) - 1;
+            currentStageIndex = parseInt(gameParam) - 1; // 把傳進來的 1 或 2 轉成索引 0 或 1
         } else {
             currentStageIndex = 0;
         }
