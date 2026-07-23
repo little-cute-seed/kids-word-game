@@ -146,15 +146,26 @@
 
     // 1. 初始化：從 JSON 載入資料
     async function initGame() {
-        try {
-            const response = await fetch('data.json');
-            gameData = await response.json();
-            loadStage();
-        } catch (error) {
-            console.error("資料載入失敗:", error);
-            document.getElementById('stage-title').innerText = "載入失敗，請檢查 data.json";
+    try {
+        const response = await fetch('data.json');
+        gameData = await response.json();
+        
+        // 抓取網址參數，例如 ?game=1 或 ?game=2
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameParam = urlParams.get('game'); // 👈 從 stage 改成 game
+        
+        if (gameParam) {
+            currentStageIndex = parseInt(gameParam) - 1;
+        } else {
+            currentStageIndex = 0;
         }
+
+        loadStage();
+    } catch (error) {
+        console.error("資料載入失敗:", error);
+        document.getElementById('stage-title').innerText = "載入失敗，請檢查 data.json";
     }
+}
 
     // 2. 載入關卡
     function loadStage() {
