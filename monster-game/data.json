@@ -3,7 +3,7 @@
   "stages": [
     {
       "stage_id": 1,
-      "name": "餵食小怪物",
+      "name": "餵食小屁豬",
       "mechanic": "choose_1_of_2",
       "questions": [
         {"word": "cat", "options": ["cat", "dog"], "image": "🐱"},
