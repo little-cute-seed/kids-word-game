@@ -153,195 +153,176 @@
         <div id="options-zone"></div>
     </div>
 
-    <script>
-        let gameData = null;
-        let currentStageIndex = 0;
-        let currentQuestionIndex = 0;
-        let draggedText = "";
-        let draggedElement = null;
+   <script>
+    let gameData = null;
+    let currentGame = null; // 當前選擇的遊戲資料
+    let currentQuestionIndex = 0;
+    let draggedText = "";
+    let draggedElement = null;
 
-        // 1. 初始化遊戲
-        async function initGame() {
-            try {
-                const response = await fetch('data.json');
-                gameData = await response.json();
-                
-                // 讀取 URL 參數 (例如 ?game=1 或 ?game=2)
-                const urlParams = new URLSearchParams(window.location.search);
-                const gameParam = urlParams.get('game');
-                
-                if (gameParam) {
-                    currentStageIndex = parseInt(gameParam) - 1;
-                } else {
-                    currentStageIndex = 0; // 預設 Game 1
-                }
-
-                // 防呆機制
-                if (isNaN(currentStageIndex) || currentStageIndex < 0 || currentStageIndex >= gameData.games.length) {
-                    currentStageIndex = 0;
-                }
-
-                loadStage();
-            } catch (error) {
-                console.error("資料載入失敗:", error);
-                document.getElementById('stage-title').innerText = "載入失敗，請檢查 data.json";
+    // 1. 初始化遊戲
+    async function initGame() {
+        try {
+            // 加時間戳記避免瀏覽器快取舊資料
+            const response = await fetch('data.json?v=' + new Date().getTime());
+            gameData = await response.json();
+            
+            // 讀取 URL 參數 (?game=1 或 ?game=2)
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameParam = parseInt(urlParams.get('game')) || 1; // 預設 1
+            
+            // 使用 find 根據 game_id 精準尋找對應遊戲
+            currentGame = gameData.games.find(g => g.game_id === gameParam);
+            
+            // 如果找不到對應的 game_id，預設載入第一個
+            if (!currentGame) {
+                currentGame = gameData.games[0];
             }
-        }
 
-        // 2. 載入當前遊戲
-        function loadStage() {
-            if (currentStageIndex >= gameData.games.length) {
-                showFinalCelebration();
-                return;
-            }
             currentQuestionIndex = 0;
             updateUI();
+        } catch (error) {
+            console.error("資料載入失敗:", error);
+            document.getElementById('stage-title').innerText = "載入失敗，請檢查 data.json";
+        }
+    }
+
+    // 2. 更新畫面 UI
+    function updateUI() {
+        if (!currentGame || !currentGame.questions) return;
+
+        const question = currentGame.questions[currentQuestionIndex];
+        
+        // 更新標題與進度條
+        document.getElementById('stage-title').innerText = `${currentGame.name} (${currentQuestionIndex + 1}/10)`;
+        document.getElementById('progress').style.width = ((currentQuestionIndex + 1) / 10 * 100) + "%";
+        
+        // 更新題目圖案
+        document.getElementById('question-card').innerText = question.image;
+        
+        // 更新角色顯示
+        const storyZone = document.getElementById('story-zone');
+        if (currentGame.game_id === 1) {
+            storyZone.innerText = "🐷 🥖";
+        } else if (currentGame.game_id === 2) {
+            storyZone.innerText = "🚂 🌲";
+        } else {
+            storyZone.innerText = "👾 🎮";
         }
 
-        // 3. 更新畫面 UI
-        function updateUI() {
-            const currentGame = gameData.games[currentStageIndex];
-            const question = currentGame.questions[currentQuestionIndex];
-            
-            // 標題與進度
-            document.getElementById('stage-title').innerText = `${currentGame.name} (${currentQuestionIndex + 1}/10)`;
-            document.getElementById('progress').style.width = ((currentQuestionIndex + 1) / 10 * 100) + "%";
-            
-            // 題目 Emoji
-            document.getElementById('question-card').innerText = question.image;
-            
-            // 故事角色顯示
-            const storyZone = document.getElementById('story-zone');
-            if (currentGame.game_id === 1) {
-                storyZone.innerText = "🐷 🥖";
-            } else if (currentGame.game_id === 2) {
-                storyZone.innerText = "🚂 🌲";
-            }
-
-            // 重置目標區
-            const dropTarget = document.getElementById('drop-target');
-            dropTarget.innerText = "拖到這裡";
-            dropTarget.style.borderColor = "#FF6B6B";
-            dropTarget.style.color = "#AAA";
-
-            // 清空並產生卡片
-            const optionsZone = document.getElementById('options-zone');
-            optionsZone.innerHTML = "";
-
-            question.options.forEach(opt => {
-                const card = document.createElement('div');
-                card.className = 'word-card';
-                card.innerText = opt.toLowerCase(); // 顯示小寫字母
-                card.setAttribute('draggable', 'true');
-                
-                // Mac/PC 滑鼠拖拽
-                card.addEventListener('dragstart', () => { 
-                    draggedText = opt; 
-                });
-                
-                // iPad / 手機觸控拖拽
-                card.addEventListener('touchstart', (e) => { 
-                    draggedText = opt; 
-                    draggedElement = card;
-                }, {passive: true});
-                
-                card.addEventListener('touchmove', handleTouchMove, {passive: false});
-                card.addEventListener('touchend', handleTouchEnd);
-
-                optionsZone.appendChild(card);
-            });
-        }
-
-        // 4. 滑鼠拖放監聽
+        // 重置目標拖放區
         const dropTarget = document.getElementById('drop-target');
-        dropTarget.addEventListener('dragover', (e) => { 
-            e.preventDefault(); 
-            dropTarget.classList.add('hovered'); 
+        dropTarget.innerText = "拖到這裡";
+        dropTarget.style.borderColor = "#FF6B6B";
+        dropTarget.style.color = "#AAA";
+
+        // 清空並重新產生選項卡片
+        const optionsZone = document.getElementById('options-zone');
+        optionsZone.innerHTML = "";
+
+        question.options.forEach(opt => {
+            const card = document.createElement('div');
+            card.className = 'word-card';
+            card.innerText = opt.toLowerCase(); // 顯示小寫
+            card.setAttribute('draggable', 'true');
+            
+            // 電腦滑鼠拖拽
+            card.addEventListener('dragstart', () => { 
+                draggedText = opt; 
+            });
+            
+            // iPad 手指觸控
+            card.addEventListener('touchstart', (e) => { 
+                draggedText = opt; 
+                draggedElement = card;
+            }, {passive: true});
+            
+            card.addEventListener('touchmove', handleTouchMove, {passive: false});
+            card.addEventListener('touchend', handleTouchEnd);
+
+            optionsZone.appendChild(card);
         });
-        dropTarget.addEventListener('dragleave', () => { 
-            dropTarget.classList.remove('hovered'); 
-        });
-        dropTarget.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropTarget.classList.remove('hovered');
+    }
+
+    // 3. 滑鼠拖放監聽
+    const dropTarget = document.getElementById('drop-target');
+    dropTarget.addEventListener('dragover', (e) => { 
+        e.preventDefault(); 
+        dropTarget.classList.add('hovered'); 
+    });
+    dropTarget.addEventListener('dragleave', () => { 
+        dropTarget.classList.remove('hovered'); 
+    });
+    dropTarget.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropTarget.classList.remove('hovered');
+        checkAnswer(draggedText);
+    });
+
+    // 4. iPad 觸控拖拽邏輯
+    function handleTouchMove(e) {
+        e.preventDefault();
+        if (!draggedElement) return;
+
+        const touch = e.touches[0];
+        draggedElement.style.position = 'fixed';
+        draggedElement.style.left = (touch.clientX - 40) + 'px';
+        draggedElement.style.top = (touch.clientY - 20) + 'px';
+        draggedElement.style.zIndex = '1000';
+        draggedElement.style.opacity = '0.85';
+    }
+
+    function handleTouchEnd(e) {
+        if (!draggedElement) return;
+
+        const touch = e.changedTouches[0];
+        const targetRect = dropTarget.getBoundingClientRect();
+
+        draggedElement.style.position = 'static';
+        draggedElement.style.opacity = '1';
+        draggedElement.style.zIndex = 'auto';
+
+        if (touch.clientX >= targetRect.left && touch.clientX <= targetRect.right &&
+            touch.clientY >= targetRect.top && touch.clientY <= targetRect.bottom) {
             checkAnswer(draggedText);
-        });
-
-        // 5. iPad 觸控拖拽邏輯
-        function handleTouchMove(e) {
-            e.preventDefault();
-            if (!draggedElement) return;
-
-            const touch = e.touches[0];
-            draggedElement.style.position = 'fixed';
-            draggedElement.style.left = (touch.clientX - 40) + 'px';
-            draggedElement.style.top = (touch.clientY - 20) + 'px';
-            draggedElement.style.zIndex = '1000';
-            draggedElement.style.opacity = '0.85';
         }
 
-        function handleTouchEnd(e) {
-            if (!draggedElement) return;
+        draggedElement = null;
+    }
 
-            const touch = e.changedTouches[0];
-            const targetRect = dropTarget.getBoundingClientRect();
+    // 5. 檢查答案
+    function checkAnswer(selectedWord) {
+        const correctAnswer = currentGame.questions[currentQuestionIndex].word;
+        const storyZone = document.getElementById('story-zone');
+        const dropTarget = document.getElementById('drop-target');
 
-            draggedElement.style.position = 'static';
-            draggedElement.style.opacity = '1';
-            draggedElement.style.zIndex = 'auto';
-
-            if (touch.clientX >= targetRect.left && touch.clientX <= targetRect.right &&
-                touch.clientY >= targetRect.top && touch.clientY <= targetRect.bottom) {
-                checkAnswer(draggedText);
-            }
-
-            draggedElement = null;
-        }
-
-        // 6. 檢查答案
-        function checkAnswer(selectedWord) {
-            const currentGame = gameData.games[currentStageIndex];
-            const correctAnswer = currentGame.questions[currentQuestionIndex].word;
-            const storyZone = document.getElementById('story-zone');
-            const dropTarget = document.getElementById('drop-target');
-
-            if (selectedWord === correctAnswer) {
-                dropTarget.innerText = "✓ 正確！";
-                dropTarget.style.borderColor = "#4FAF44";
-                dropTarget.style.color = "#4FAF44";
+        if (selectedWord === correctAnswer) {
+            dropTarget.innerText = "✓ 正確！";
+            dropTarget.style.borderColor = "#4FAF44";
+            dropTarget.style.color = "#4FAF44";
+            
+            storyZone.classList.add('monster-bounce');
+            
+            setTimeout(() => {
+                storyZone.classList.remove('monster-bounce');
+                currentQuestionIndex++;
                 
-                storyZone.classList.add('monster-bounce');
-                
-                setTimeout(() => {
-                    storyZone.classList.remove('monster-bounce');
-                    currentQuestionIndex++;
-                    
-                    if (currentQuestionIndex >= 10) {
-                        alert(`🏆 恭喜完成 ${currentGame.name}！`);
-                        // 返回選單頁面
-                        window.location.href = "../game-select.html";
-                    } else {
-                        updateUI();
-                    }
-                }, 800);
-            } else {
-                dropTarget.innerText = "❌ 再試一次";
-                dropTarget.style.borderColor = "#FF4136";
-                dropTarget.style.color = "#FF4136";
-            }
+                if (currentQuestionIndex >= currentGame.questions.length) {
+                    alert(`🏆 恭喜完成 ${currentGame.name}！`);
+                    window.location.href = "../game-select.html";
+                } else {
+                    updateUI();
+                }
+            }, 800);
+        } else {
+            dropTarget.innerText = "❌ 再試一次";
+            dropTarget.style.borderColor = "#FF4136";
+            dropTarget.style.color = "#FF4136";
         }
+    }
 
-        // 7. 通關慶祝
-        function showFinalCelebration() {
-            document.getElementById('game-container').innerHTML = `
-                <h1 style="color:#FF6B6B;">👑 通關大成功！ 👑</h1>
-                <p style="font-size:80px;">🏆🎉🎈</p>
-                <button onclick="window.location.href='../game-select.html'" style="padding:15px 30px; font-size:18px; border-radius:15px; background:#4FAF44; color:white; border:none; cursor:pointer;">返回選單</button>
-            `;
-        }
-
-        // 啟動遊戲
-        initGame();
-    </script>
+    // 啟動遊戲
+    initGame();
+</script>
 </body>
 </html>
