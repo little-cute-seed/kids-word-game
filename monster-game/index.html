@@ -2,197 +2,266 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kids Word Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kids Math Game - Number Rocket</title>
     <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
         body {
             margin: 0;
             padding: 20px;
-            background-color: #F4F9F9;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #E8F0FE;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            box-sizing: border-box;
             position: relative;
+            overflow: hidden;
         }
 
-        /* 🏠 左上角 Home 按鈕樣式 */
+        /* 🏠 左上角 Home 按鈕 */
         .home-btn {
             position: absolute;
             top: 20px;
             left: 20px;
             background-color: #FFFFFF;
-            color: #4D96FF;
-            border: 2px solid #4D96FF;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 16px;
+            color: #FF6B6B;
+            border: 3px solid #FF6B6B;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 18px;
             font-weight: bold;
             text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             z-index: 100;
         }
 
-        .home-btn:hover {
-            background-color: #4D96FF;
-            color: white;
-            transform: scale(1.05);
+        .home-btn:active {
+            transform: scale(0.95);
         }
 
         #game-container {
-            background: white;
-            border-radius: 25px;
+            background: #FFFFFF;
+            border-radius: 30px;
             padding: 25px;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            max-width: 550px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
             text-align: center;
-            margin-top: 20px;
+            position: relative;
         }
 
         #stage-title {
-            color: #FF6B6B;
-            font-size: 26px;
+            color: #4A90E2;
+            font-size: 28px;
             margin: 0 0 10px 0;
-            font-weight: bold;
+            font-weight: 900;
+            text-shadow: 1px 1px 0px #C8D8F8;
         }
 
-        /* 故事區塊： Emoji (小豬/火車) */
+        /* 🚀 火箭故事區塊 */
         #story-zone {
-            font-size: 50px;
-            margin: 0;
-            padding: 0;
-            min-height: 0;
-            line-height: 1;
-            transition: transform 0.2s ease;
+            font-size: 65px;
+            margin: 10px 0;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .monster-bounce {
-            animation: bounce 0.5s ease infinite alternate;
+        .rocket-launch {
+            animation: launch 0.8s ease forwards;
         }
 
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-15px); }
+        @keyframes launch {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.2); }
+            100% { transform: translateY(0) scale(1); }
         }
 
         /* 進度條容器 */
         .progress-bar-container {
             width: 100%;
-            height: 20px;
+            height: 22px;
             background-color: #E0E0E0;
-            border-radius: 10px;
-            margin: 10px 0 20px 0;
+            border-radius: 12px;
+            margin: 15px 0 25px 0;
             overflow: hidden;
-            border: 2px solid #FFF;
+            border: 3px solid #FFF;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
         }
 
         #progress {
             height: 100%;
             width: 0%;
-            background-color: #FF6B6B;
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, #FF9F43, #FF5252);
+            transition: width 0.4s ease;
             border-radius: 10px;
         }
 
-        /* 題目卡片 */
-        #question-card {
-            font-size: 90px;
-            margin: 10px 0;
-            line-height: 1.1;
-        }
-
-        /* 放置區 */
-        #drop-target {
-            width: 80%;
-            height: 60px;
-            margin: 15px auto;
-            border: 3px dashed #FF6B6B;
-            border-radius: 15px;
+        /* 題目序列顯示區 */
+        #sequence-display {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 20px;
-            color: #AAA;
-            font-weight: bold;
-            background-color: #FFF9F9;
+            gap: 12px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .num-box {
+            width: 75px;
+            height: 75px;
+            background-color: #4D96FF;
+            color: white;
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 38px;
+            font-weight: 900;
+            box-shadow: 0 6px 0px #2B62C2, 0 10px 10px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 0px #1A448C;
+        }
+
+        /* 🎯 空格放置目標區 */
+        #drop-target {
+            width: 85px;
+            height: 75px;
+            border: 4px dashed #FF6B6B;
+            background-color: #FFF0F0;
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 38px;
+            font-weight: 900;
+            color: #FF6B6B;
             transition: all 0.2s ease;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.05);
         }
 
         #drop-target.hovered {
             background-color: #FFE3E3;
-            transform: scale(1.05);
+            transform: scale(1.08);
+            border-color: #FF2E2E;
         }
 
-        /* 答案選項區 */
+        /* 數字選項卡片區 */
         #options-zone {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-top: 20px;
+            gap: 18px;
+            margin-top: 30px;
             flex-wrap: wrap;
         }
 
         .word-card {
-            background-color: #4D96FF;
+            width: 80px;
+            height: 80px;
+            background-color: #6BCB77;
             color: white;
-            padding: 12px 24px;
-            border-radius: 15px;
-            font-size: 22px;
-            font-weight: bold;
+            border-radius: 20px;
+            font-size: 40px;
+            font-weight: 900;
             cursor: grab;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 0px #3B9B47, 0 8px 15px rgba(0,0,0,0.12);
             touch-action: none;
             transition: transform 0.1s ease;
+            text-shadow: 2px 2px 0px #246B2C;
         }
 
         .word-card:active {
             cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        /* ✨ 彩色星光與煙火特效 */
+        .sparkle {
+            position: absolute;
+            font-size: 30px;
+            pointer-events: none;
+            animation: pop 0.6s ease-out forwards;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0) translate(0, 0); opacity: 1; }
+            100% { transform: scale(1.5) translate(var(--tx), var(--ty)); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 🏠 左上角返回主頁按鈕 -->
+    <!-- 🏠 返回選單頁 -->
     <a href="../game-select.html" class="home-btn">⬅️ Home</a>
 
     <div id="game-container">
         <!-- 標題 -->
         <div id="stage-title">關卡載入中...</div>
 
-        <!-- 小豬/火車 故事區 -->
-        <div id="story-zone">🐷</div>
+        <!-- 🚀 故事小怪物與火箭 -->
+        <div id="story-zone">🚀 👾</div>
 
         <!-- 進度條 -->
         <div class="progress-bar-container">
             <div id="progress"></div>
         </div>
 
-        <!-- 題目圖案 -->
-        <div id="question-card">🐱</div>
+        <!-- 數字序列題目區 -->
+        <div id="sequence-display"></div>
 
-        <!-- 拖放目標區 -->
-        <div id="drop-target">拖到這裡</div>
-
-        <!-- 選項卡片區 -->
+        <!-- 數字選項區 -->
         <div id="options-zone"></div>
     </div>
 
     <script>
     let gameData = null;
-    let currentGame = null; // 當前選擇的遊戲資料
+    let currentGame = null; 
     let currentQuestionIndex = 0;
     let draggedText = "";
     let draggedElement = null;
 
-    // 🎲 專業洗牌演算法 (Fisher-Yates Shuffle)，保證 100% 隨機打亂
+    // 🔊 音效系統 (使用 Web Audio API，無需外部音檔)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playSound(type) {
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'correct') {
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3); // A5
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(110, audioCtx.currentTime + 0.25);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.25);
+        }
+    }
+
+    // 🎲 Fisher-Yates 洗牌演算法
     function shuffleArray(array) {
         let arr = [...array];
         for (let i = arr.length - 1; i > 0; i--) {
@@ -205,18 +274,14 @@
     // 1. 初始化遊戲
     async function initGame() {
         try {
-            // 加時間戳記避免瀏覽器快取舊資料
             const response = await fetch('data.json?v=' + new Date().getTime());
             gameData = await response.json();
             
-            // 讀取 URL 參數 (?game=1 或 ?game=2)
             const urlParams = new URLSearchParams(window.location.search);
-            const gameParam = parseInt(urlParams.get('game')) || 1; // 預設 1
+            const gameParam = parseInt(urlParams.get('game')) || 3; // 預設載入 Game 3
             
-            // 使用 find 根據 game_id 精準尋找對應遊戲
             currentGame = gameData.games.find(g => g.game_id === gameParam);
             
-            // 如果找不到對應的 game_id，預設載入第一個
             if (!currentGame) {
                 currentGame = gameData.games[0];
             }
@@ -233,53 +298,67 @@
     function updateUI() {
         if (!currentGame || !currentGame.questions) return;
 
+        const totalQ = currentGame.questions.length;
         const question = currentGame.questions[currentQuestionIndex];
         
-        // 更新標題與進度條
-        document.getElementById('stage-title').innerText = `${currentGame.name} (${currentQuestionIndex + 1}/10)`;
-        document.getElementById('progress').style.width = ((currentQuestionIndex + 1) / 10 * 100) + "%";
+        // 更新標題與進度
+        document.getElementById('stage-title').innerText = `${currentGame.name} (${currentQuestionIndex + 1}/${totalQ})`;
+        document.getElementById('progress').style.width = ((currentQuestionIndex + 1) / totalQ * 100) + "%";
         
-        // 更新題目圖案
-        document.getElementById('question-card').innerText = question.image;
-        
-        // 更新角色顯示
-        const storyZone = document.getElementById('story-zone');
-        if (currentGame.game_id === 1) {
-            storyZone.innerText = "🐷 🥖";
-        } else if (currentGame.game_id === 2) {
-            storyZone.innerText = "🚂 🌲";
-        } else {
-            storyZone.innerText = "👾 🎮";
-        }
+        // 渲染數字序列
+        const seqDisplay = document.getElementById('sequence-display');
+        seqDisplay.innerHTML = "";
 
-        // 重置目標拖放區
-        const dropTarget = document.getElementById('drop-target');
-        dropTarget.innerText = "拖到這裡";
-        dropTarget.style.borderColor = "#FF6B6B";
-        dropTarget.style.color = "#AAA";
+        // 解析 sequence 陣列並產出卡片/目標區
+        question.sequence.forEach(item => {
+            if (item === "_") {
+                const dropTarget = document.createElement('div');
+                dropTarget.id = "drop-target";
+                dropTarget.innerText = "_";
+                
+                // 綁定拖放事件
+                dropTarget.addEventListener('dragover', (e) => { 
+                    e.preventDefault(); 
+                    dropTarget.classList.add('hovered'); 
+                });
+                dropTarget.addEventListener('dragleave', () => { 
+                    dropTarget.classList.remove('hovered'); 
+                });
+                dropTarget.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropTarget.classList.remove('hovered');
+                    checkAnswer(draggedText);
+                });
 
-        // 清空並重新產生選項卡片
+                seqDisplay.appendChild(dropTarget);
+            } else {
+                const numBox = document.createElement('div');
+                numBox.className = 'num-box';
+                numBox.innerText = item;
+                seqDisplay.appendChild(numBox);
+            }
+        });
+
+        // 產生選項卡片
         const optionsZone = document.getElementById('options-zone');
         optionsZone.innerHTML = "";
 
-        // 🎲 使用 Fisher-Yates 演算法進行強效洗牌
         const shuffledOptions = shuffleArray(question.options);
 
-        // 使用洗牌後的 shuffledOptions 來產生卡片
         shuffledOptions.forEach(opt => {
             const card = document.createElement('div');
             card.className = 'word-card';
-            card.innerText = opt.toLowerCase(); // 顯示小寫
+            card.innerText = opt;
             card.setAttribute('draggable', 'true');
             
-            // 電腦滑鼠拖拽
+            // 電腦拖拽
             card.addEventListener('dragstart', () => { 
-                draggedText = opt; 
+                draggedText = String(opt); 
             });
             
-            // iPad 手指觸控
+            // iPad 觸控
             card.addEventListener('touchstart', (e) => { 
-                draggedText = opt; 
+                draggedText = String(opt); 
                 draggedElement = card;
             }, {passive: true});
             
@@ -290,22 +369,7 @@
         });
     }
 
-    // 3. 滑鼠拖放監聽
-    const dropTarget = document.getElementById('drop-target');
-    dropTarget.addEventListener('dragover', (e) => { 
-        e.preventDefault(); 
-        dropTarget.classList.add('hovered'); 
-    });
-    dropTarget.addEventListener('dragleave', () => { 
-        dropTarget.classList.remove('hovered'); 
-    });
-    dropTarget.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropTarget.classList.remove('hovered');
-        checkAnswer(draggedText);
-    });
-
-    // 4. iPad 觸控拖拽邏輯
+    // 3. iPad 觸控拖拽邏輯
     function handleTouchMove(e) {
         e.preventDefault();
         if (!draggedElement) return;
@@ -313,57 +377,91 @@
         const touch = e.touches[0];
         draggedElement.style.position = 'fixed';
         draggedElement.style.left = (touch.clientX - 40) + 'px';
-        draggedElement.style.top = (touch.clientY - 20) + 'px';
+        draggedElement.style.top = (touch.clientY - 40) + 'px';
         draggedElement.style.zIndex = '1000';
-        draggedElement.style.opacity = '0.85';
+        draggedElement.style.opacity = '0.9';
     }
 
     function handleTouchEnd(e) {
         if (!draggedElement) return;
 
         const touch = e.changedTouches[0];
-        const targetRect = dropTarget.getBoundingClientRect();
+        const dropTarget = document.getElementById('drop-target');
 
         draggedElement.style.position = 'static';
         draggedElement.style.opacity = '1';
         draggedElement.style.zIndex = 'auto';
 
-        if (touch.clientX >= targetRect.left && touch.clientX <= targetRect.right &&
-            touch.clientY >= targetRect.top && touch.clientY <= targetRect.bottom) {
-            checkAnswer(draggedText);
+        if (dropTarget) {
+            const targetRect = dropTarget.getBoundingClientRect();
+            if (touch.clientX >= targetRect.left && touch.clientX <= targetRect.right &&
+                touch.clientY >= targetRect.top && touch.clientY <= targetRect.bottom) {
+                checkAnswer(draggedText);
+            }
         }
 
         draggedElement = null;
     }
 
-    // 5. 檢查答案
+    // 4. 檢查答案與動畫特效
     function checkAnswer(selectedWord) {
-        const correctAnswer = currentGame.questions[currentQuestionIndex].word;
-        const storyZone = document.getElementById('story-zone');
+        const correctAnswer = String(currentGame.questions[currentQuestionIndex].answer);
         const dropTarget = document.getElementById('drop-target');
+        const storyZone = document.getElementById('story-zone');
 
         if (selectedWord === correctAnswer) {
-            dropTarget.innerText = "✓ 正確！";
-            dropTarget.style.borderColor = "#4FAF44";
-            dropTarget.style.color = "#4FAF44";
-            
-            storyZone.classList.add('monster-bounce');
-            
+            playSound('correct');
+            dropTarget.innerText = selectedWord;
+            dropTarget.style.backgroundColor = "#6BCB77";
+            dropTarget.style.color = "#FFF";
+            dropTarget.style.borderColor = "#6BCB77";
+
+            // 火箭上升動畫
+            storyZone.classList.add('rocket-launch');
+            createSparkles();
+
             setTimeout(() => {
-                storyZone.classList.remove('monster-bounce');
+                storyZone.classList.remove('rocket-launch');
                 currentQuestionIndex++;
                 
                 if (currentQuestionIndex >= currentGame.questions.length) {
-                    alert(`🏆 恭喜完成 ${currentGame.name}！`);
+                    playSound('correct');
+                    alert(`🏆 太棒了！火箭成功發射至宇宙！`);
                     window.location.href = "../game-select.html";
                 } else {
                     updateUI();
                 }
-            }, 800);
+            }, 900);
         } else {
-            dropTarget.innerText = "❌ 再試一次";
+            playSound('wrong');
+            dropTarget.innerText = "❌";
+            dropTarget.style.backgroundColor = "#FFD2D2";
             dropTarget.style.borderColor = "#FF4136";
-            dropTarget.style.color = "#FF4136";
+            
+            setTimeout(() => {
+                dropTarget.innerText = "_";
+                dropTarget.style.backgroundColor = "#FFF0F0";
+                dropTarget.style.borderColor = "#FF6B6B";
+            }, 700);
+        }
+    }
+
+    // 🌟 彩色星光特效
+    function createSparkles() {
+        const container = document.getElementById('game-container');
+        const stars = ['⭐', '✨', '🌟', '🎉', '🚀'];
+        
+        for (let i = 0; i < 8; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.innerText = stars[Math.floor(Math.random() * stars.length)];
+            sparkle.style.left = '50%';
+            sparkle.style.top = '30%';
+            sparkle.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px');
+            sparkle.style.setProperty('--ty', (Math.random() * -150 - 20) + 'px');
+            
+            container.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 600);
         }
     }
 
