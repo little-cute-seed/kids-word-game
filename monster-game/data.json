@@ -31,6 +31,32 @@
         { "image": "⚫", "word": "BLACK", "options": ["BLACK", "BROWN", "WHITE"] },
         { "image": "🤎", "word": "BROWN", "options": ["BROWN", "ORANGE", "RED"] }
       ]
+    },
+    {
+      "game_id": 3,
+      "name": "🚀 Game 3: 數字火箭升空",
+      "questions": [
+        { "sequence": [5, "_", 7], "answer": 6, "options": [6, 4, 8] },
+        { "sequence": [10, 11, "_"], "answer": 12, "options": [12, 13, 9] },
+        { "sequence": ["_", 15, 16], "answer": 14, "options": [14, 13, 17] },
+        { "sequence": [20, 19, "_"], "answer": 18, "options": [18, 21, 17] },
+        { "sequence": [8, "_", 10], "answer": 9, "options": [9, 7, 11] },
+        { "sequence": [25, 24, "_"], "answer": 23, "options": [23, 22, 26] },
+        { "sequence": [12, "_", 14], "answer": 13, "options": [13, 11, 15] },
+        { "sequence": ["_", 21, 22], "answer": 20, "options": [20, 19, 23] },
+        { "sequence": [15, 14, "_"], "answer": 13, "options": [13, 16, 12] },
+        { "sequence": [27, 28, "_"], "answer": 29, "options": [29, 30, 26] },
+        { "sequence": [6, "_", 8], "answer": 7, "options": [7, 5, 9] },
+        { "sequence": [17, 18, "_"], "answer": 19, "options": [19, 20, 16] },
+        { "sequence": ["_", 9, 10], "answer": 8, "options": [8, 7, 11] },
+        { "sequence": [16, 15, "_"], "answer": 14, "options": [14, 13, 17] },
+        { "sequence": [22, "_", 24], "answer": 23, "options": [23, 21, 25] },
+        { "sequence": [11, 12, "_"], "answer": 13, "options": [13, 14, 10] },
+        { "sequence": ["_", 18, 19], "answer": 17, "options": [17, 16, 20] },
+        { "sequence": [29, 28, "_"], "answer": 27, "options": [27, 30, 26] },
+        { "sequence": [19, "_", 21], "answer": 20, "options": [20, 18, 22] },
+        { "sequence": [23, 24, "_"], "answer": 25, "options": [25, 26, 22] }
+      ]
     }
   ]
 }
