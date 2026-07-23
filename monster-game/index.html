@@ -248,7 +248,7 @@
 
     // 6. 檢查答案與視覺回饋
     function checkAnswer(selectedWord) {
-        const stage = gameData.stages[currentStageIndex];
+        const stage = gameData.games[currentStageIndex];
         const correctAnswer = stage.questions[currentQuestionIndex].word;
         const storyZone = document.getElementById('story-zone');
 
@@ -259,7 +259,7 @@
             
             // 故事互動特效
             storyZone.classList.add('monster-bounce');
-            if (stage.stage_id === 1) storyZone.innerText = "😋 Yeah!";
+            if (stage.game_id === 1) storyZone.innerText = "😋 Yeah!";
             else if (stage.stage_id === 2) storyZone.innerText = "🚂💨 *前進*";
 
             setTimeout(() => {
