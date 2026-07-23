@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>小怪物的英文冒險</title>
+    <title>小屁豬的英文冒險</title>
     <style>
         /* 適合兒童的活潑 UI 風格 */ 
         body {
@@ -202,7 +202,10 @@
             card.addEventListener('dragstart', (e) => { draggedText = opt; });
             
             // 綁定觸控事件 (iPad 手指觸控優化)
-            card.addEventListener('touchstart', (e) => { draggedText = opt; }, {passive: true});
+            card.addEventListener('touchstart', (e) => { 
+    draggedText = opt; 
+    draggedElement = card; 
+}, {passive: true});
             card.addEventListener('touchmove', handleTouchMove, {passive: false});
             card.addEventListener('touchend', handleTouchEnd);
 
