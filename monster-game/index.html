@@ -143,54 +143,65 @@
     let currentStageIndex = 0;
     let currentQuestionIndex = 0;
     let draggedText = "";
+    let draggedElement = null; // 支援 iPad 觸控
 
-    // 1. 初始化：從 JSON 載入資料
-   async function initGame() {
-    try {
-        const response = await fetch('data.json');
-        gameData = await response.json();
-        
-        // 關鍵：這裡要抓取的參數名字是 game
-        const urlParams = new URLSearchParams(window.location.search);
-        const gameParam = urlParams.get('game'); 
-        
-        if (gameParam) {
-            currentStageIndex = parseInt(gameParam) - 1; // 把傳進來的 1 或 2 轉成索引 0 或 1
-        } else {
-            currentStageIndex = 0;
+    // 1. 初始化：從 JSON 載入資料並讀取網址參數 (?game=1 或 ?game=2)
+    async function initGame() {
+        try {
+            const response = await fetch('data.json');
+            gameData = await response.json();
+            
+            // 取得網址上的 game 參數
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameParam = urlParams.get('game');
+            
+            if (gameParam) {
+                currentStageIndex = parseInt(gameParam) - 1; // 轉為程式索引 (0 或 1)
+            } else {
+                currentStageIndex = 0; // 預設第 1 關
+            }
+
+            // 防呆機制：如果傳入的關卡數字超出範圍，預設回第 1 關
+            if (isNaN(currentStageIndex) || currentStageIndex < 0 || currentStageIndex >= gameData.games.length) {
+                currentStageIndex = 0;
+            }
+
+            loadStage();
+        } catch (error) {
+            console.error("資料載入失敗:", error);
+            document.getElementById('stage-title').innerText = "載入失敗，請檢查 data.json";
         }
-
-        loadStage();
-    } catch (error) {
-        console.error("資料載入失敗:", error);
-        document.getElementById('stage-title').innerText = "載入失敗，請檢查 data.json";
     }
-}
 
     // 2. 載入關卡
     function loadStage() {
-    if (currentStageIndex >= gameData.games.length) { // 👈 stages 改成 games
-        showFinalCelebration();
-        return;
+        if (currentStageIndex >= gameData.games.length) {
+            showFinalCelebration();
+            return;
+        }
+        currentQuestionIndex = 0;
+        updateUI();
     }
-    currentQuestionIndex = 0;
-    updateUI();
-}
 
     // 3. 更新畫面 UI
-    const stage = gameData.games[currentStageIndex]; // 👈 stages 改成 games
-    const question = stage.questions[currentQuestionIndex];
-    
-    document.getElementById('stage-title').innerText = `${stage.name} (${currentQuestionIndex + 1}/10)`;
-    document.getElementById('progress').style.width = (currentQuestionIndex / 10) * 100 + "%";
-    document.getElementById('question-card').innerText = question.image;
-    
-    const storyZone = document.getElementById('story-zone');
-    if (stage.game_id === 1) { // 👈 stage_id 改成 game_id
-        storyZone.innerText = "🐷 🥖"; 
-    } else if (stage.game_id === 2) { // 👈 stage_id 改成 game_id
-        storyZone.innerText = "🚂 🌲"; 
-    }
+    function updateUI() {
+        const currentGame = gameData.games[currentStageIndex];
+        const question = currentGame.questions[currentQuestionIndex];
+        
+        // 更新標題與進度條 (10題制)
+        document.getElementById('stage-title').innerText = `${currentGame.name} (${currentQuestionIndex + 1}/10)`;
+        document.getElementById('progress').style.width = (currentQuestionIndex / 10) * 100 + "%";
+        
+        // 更新題目圖片 (Emoji)
+        document.getElementById('question-card').innerText = question.image;
+        
+        // 更新故事線狀態
+        const storyZone = document.getElementById('story-zone');
+        if (currentGame.game_id === 1) {
+            storyZone.innerText = "🐷 🥖"; // 第一關：小豬與麵包
+        } else if (currentGame.game_id === 2) {
+            storyZone.innerText = "🚂 🌲"; // 第二關：火車旅行
+        }
 
         // 清空並重新渲染答案卡
         const optionsZone = document.getElementById('options-zone');
@@ -209,9 +220,10 @@
             
             // 綁定觸控事件 (iPad 手指觸控優化)
             card.addEventListener('touchstart', (e) => { 
-    draggedText = opt; 
-    draggedElement = card; 
-}, {passive: true});
+                draggedText = opt; 
+                draggedElement = card; // 記錄被拖拽的卡片
+            }, {passive: true});
+            
             card.addEventListener('touchmove', handleTouchMove, {passive: false});
             card.addEventListener('touchend', handleTouchEnd);
 
@@ -228,28 +240,41 @@
         checkAnswer(draggedText);
     });
 
-    // 5. 處理 iPad 觸控拖放相容性
+    // 5. 處理 iPad 觸控拖放相容性（帶視覺跟隨效果）
     function handleTouchMove(e) {
-        e.preventDefault(); // 阻止 iPad 畫面滾動
+        e.preventDefault(); // 阻止 iPad 頁面滾動
+        if (!draggedElement) return;
+
         const touch = e.touches[0];
-        // 讓被拖拽的卡片視覺上跟著手指（進階優化可加入，此處先記錄手指位置）
+        draggedElement.style.position = 'fixed';
+        draggedElement.style.left = (touch.clientX - 50) + 'px';
+        draggedElement.style.top = (touch.clientY - 30) + 'px';
+        draggedElement.style.zIndex = '1000';
+        draggedElement.style.opacity = '0.8';
     }
 
     function handleTouchEnd(e) {
+        if (!draggedElement) return;
+
         const touch = e.changedTouches[0];
         const targetRect = dropTarget.getBoundingClientRect();
-        
-        // 判斷手指放開的位置是不是在目標框之內
+
+        draggedElement.style.position = 'static';
+        draggedElement.style.opacity = '1';
+        draggedElement.style.zIndex = 'auto';
+
         if (touch.clientX >= targetRect.left && touch.clientX <= targetRect.right &&
             touch.clientY >= targetRect.top && touch.clientY <= targetRect.bottom) {
             checkAnswer(draggedText);
         }
+
+        draggedElement = null;
     }
 
     // 6. 檢查答案與視覺回饋
     function checkAnswer(selectedWord) {
-        const stage = gameData.games[currentStageIndex];
-        const correctAnswer = stage.questions[currentQuestionIndex].word;
+        const currentGame = gameData.games[currentStageIndex];
+        const correctAnswer = currentGame.questions[currentQuestionIndex].word;
         const storyZone = document.getElementById('story-zone');
 
         if (selectedWord === correctAnswer) {
@@ -259,14 +284,14 @@
             
             // 故事互動特效
             storyZone.classList.add('monster-bounce');
-            if (stage.game_id === 1) storyZone.innerText = "😋 Yeah!";
-            else if (stage.stage_id === 2) storyZone.innerText = "🚂💨 *前進*";
+            if (currentGame.game_id === 1) storyZone.innerText = "😋 *好吃*";
+            else if (currentGame.game_id === 2) storyZone.innerText = "🚂💨 *前進*";
 
             setTimeout(() => {
                 storyZone.classList.remove('monster-bounce');
                 currentQuestionIndex++;
                 
-                // 判斷是否過關
+                // 判斷是否過關 (10 題結束)
                 if (currentQuestionIndex >= 10) {
                     showStageCompleteAdTrigger();
                 } else {
@@ -274,21 +299,15 @@
                 }
             }, 1000);
         } else {
-            // 答錯回饋 (溫和不懲罰)
+            // 答錯回饋
             dropTarget.innerText = "❌ 再試一次";
             dropTarget.style.borderColor = "#FF4136";
         }
     }
 
-    // 7. 模擬關卡結束與未來廣告埋點
+    // 7. 關卡結束彈窗
     function showStageCompleteAdTrigger() {
         alert(`🏆 恭喜通關！獲得關卡獎杯！`);
-        
-        // --- 未來廣告埋點位置 ---
-        // 這裡就是你以後呼叫 Google H5 Ads (adBreak) 的地方
-        console.log("【廣告觸發點】：展示過場廣告");
-        // -----------------------
-
         currentStageIndex++;
         loadStage();
     }
