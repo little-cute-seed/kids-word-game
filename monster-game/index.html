@@ -3,130 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kids Word & Math Game - 選關頁面</title>
+    <title>Kids Word & Math Game - Select Level</title>
     <style>
         * {
             box-sizing: border-box;
             user-select: none;
+            -webkit-user-select: none;
         }
 
         body {
             margin: 0;
-            padding: 20px;
-            background-color: #F4F9F9;
-            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 40px 20px;
+            background-color: #CBE6FF;
+            background-image: radial-gradient(circle at 50% 50%, #E2F0FF 0%, #BFE0FF 100%);
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Fredoka', cursive, sans-serif;
             min-height: 100vh;
-        }
-
-        .menu-container {
-            background: white;
-            border-radius: 25px;
-            padding: 30px 20px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
-            color: #FF6B6B;
-            font-size: 28px;
-            margin-bottom: 25px;
+            color: #2C3E50;
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
         }
 
-        .game-list {
+        /* 🎴 3-Column Grid Layout */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Card Container */
+        .game-card {
+            background: #FFFFFF;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
             display: flex;
             flex-direction: column;
-            gap: 18px;
-        }
-
-        .game-card {
-            display: flex;
-            align-items: center;
-            padding: 18px;
-            border-radius: 20px;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
         }
 
-        .game-card:active {
-            transform: scale(0.98);
+        .game-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.12);
         }
 
-        .game-card .icon {
-            font-size: 40px;
-            margin-right: 15px;
+        /* Banner Pattern Header */
+        .card-header {
+            height: 160px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .game-card .info {
-            text-align: left;
+        /* Level 1 Purple Dotted Pattern */
+        .card-header.purple {
+            background-color: #9C82FA;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
+            background-size: 16px 16px;
         }
 
-        .game-card .info .title {
-            font-size: 20px;
-            margin-bottom: 4px;
+        /* Level 2 Teal Dotted Pattern */
+        .card-header.teal {
+            background-color: #4AD3C6;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
+            background-size: 16px 16px;
         }
 
-        .game-card .info .desc {
-            font-size: 14px;
-            opacity: 0.9;
-            font-weight: normal;
+        /* Level 3 Orange Dotted Pattern */
+        .card-header.orange {
+            background-color: #FFAE42;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px);
+            background-size: 16px 16px;
         }
 
-        /* 遊戲卡片主題顏色 */
-        .game-1 {
-            background-color: #FF6B6B;
+        .card-icon {
+            font-size: 64px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
         }
 
-        .game-2 {
-            background-color: #4D96FF;
+        /* Hot Badge */
+        .hot-badge {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background-color: #FF5252;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 900;
+            box-shadow: 0 3px 6px rgba(255, 82, 82, 0.4);
         }
 
-        .game-3 {
-            background-color: #6BCB77;
+        /* Card Content Body */
+        .card-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 900;
+            color: #1E293B;
+            margin: 0 0 16px 0;
+            line-height: 1.3;
+        }
+
+        /* Tags / Badges Container */
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tag-blue {
+            background-color: #EEF4FF;
+            color: #4F46E5;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .tag-orange {
+            background-color: #FFF6ED;
+            color: #EA580C;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* Description text */
+        .card-desc {
+            font-size: 13px;
+            color: #64748B;
+            line-height: 1.5;
+            margin-top: auto;
         }
     </style>
 </head>
 <body>
 
-    <div class="menu-container">
-        <h1>🎮 小怪物樂園</h1>
-        
-        <div class="game-list">
-            <!-- 🐷 Game 1 -->
-            <a href="./monster-game/?game=1" class="game-card game-1">
-                <span class="icon">🐷</span>
-                <div class="info">
-                    <div class="title">Game 1</div>
-                    <div class="desc">餵食小屁豬 (英文單字)</div>
-                </div>
-            </a>
+    <h1>🎮 選擇遊戲關卡 Choose a Game</h1>
 
-            <!-- 🚂 Game 2 -->
-            <a href="./monster-game/?game=2" class="game-card game-2">
-                <span class="icon">🚂</span>
-                <div class="info">
-                    <div class="title">Game 2</div>
-                    <div class="desc">顏色小火車 (顏色單字)</div>
-                </div>
-            </a>
+    <div class="game-grid">
 
-            <!-- 🚀 Game 3 (全新新增) -->
-            <a href="./monster-game/?game=3" class="game-card game-3">
-                <span class="icon">🚀</span>
-                <div class="info">
-                    <div class="title">Game 3</div>
-                    <div class="desc">數字火箭升空 (數字序列)</div>
+        <!-- Game 1: 餵食小屁豬 -->
+        <a href="./monster-game/index.html?game=1" class="game-card">
+            <div class="card-header purple">
+                <span class="hot-badge">Hot</span>
+                <div class="card-icon">🐷</div>
+            </div>
+            <div class="card-body">
+                <h2 class="card-title">Level 1: 餵食小屁豬</h2>
+                <div class="tag-container">
+                    <span class="tag-blue">英文單字拼音</span>
+                    <span class="tag-orange">Word Spelling</span>
+                    <span class="tag-blue">動物與食物</span>
+                    <span class="tag-orange">Animals & Food</span>
                 </div>
-            </a>
-        </div>
+                <div class="card-desc">
+                    小屁豬肚子餓了！拖拽正確的英文單字來餵食牠吧！ Feed the hungry pig by matching words.
+                </div>
+            </div>
+        </a>
+
+        <!-- Game 2: 顏色小火車 -->
+        <a href="./monster-game/index.html?game=2" class="game-card">
+            <div class="card-header teal">
+                <div class="card-icon">🚂</div>
+            </div>
+            <div class="card-body">
+                <h2 class="card-title">Level 2: 顏色小火車</h2>
+                <div class="tag-container">
+                    <span class="tag-blue">顏色與形狀認知</span>
+                    <span class="tag-orange">Colors & Shapes</span>
+                    <span class="tag-blue">基礎詞彙</span>
+                    <span class="tag-orange">Basic Vocabulary</span>
+                </div>
+                <div class="card-desc">
+                    小火車要出發了！幫忙配對正確的顏色卡片吧！ Help the train collect color cards.
+                </div>
+            </div>
+        </a>
+
+        <!-- Game 3: 數字火箭升空 -->
+        <a href="./monster-game/index.html?game=3" class="game-card">
+            <div class="card-header orange">
+                <div class="card-icon">🚀</div>
+            </div>
+            <div class="card-body">
+                <h2 class="card-title">Level 3: 數字火箭升空</h2>
+                <div class="tag-container">
+                    <span class="tag-blue">數字規律與填空</span>
+                    <span class="tag-orange">Number Sequences</span>
+                    <span class="tag-blue">基礎數學邏輯</span>
+                    <span class="tag-orange">Math Logic</span>
+                </div>
+                <div class="card-desc">
+                    找出缺少的數字，填補序列讓火箭發射升空！ Fill in the missing number to launch the rocket!
+                </div>
+            </div>
+        </a>
+
     </div>
 
 </body>
