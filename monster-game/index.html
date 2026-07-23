@@ -169,33 +169,28 @@
 
     // 2. 載入關卡
     function loadStage() {
-        if (currentStageIndex >= gameData.stages.length) {
-            showFinalCelebration();
-            return;
-        }
-        currentQuestionIndex = 0;
-        updateUI();
+    if (currentStageIndex >= gameData.games.length) { // 👈 stages 改成 games
+        showFinalCelebration();
+        return;
     }
+    currentQuestionIndex = 0;
+    updateUI();
+}
 
     // 3. 更新畫面 UI
-    function updateUI() {
-        const stage = gameData.stages[currentStageIndex];
-        const question = stage.questions[currentQuestionIndex];
-        
-        // 更新標題與進度條 (10題制)
-        document.getElementById('stage-title').innerText = `${stage.name} (${currentQuestionIndex + 1}/10)`;
-        document.getElementById('progress').style.width = (currentQuestionIndex / 10) * 100 + "%";
-        
-        // 更新題目圖片 (Emoji)
-        document.getElementById('question-card').innerText = question.image;
-        
-        // 更新故事線狀態
-        const storyZone = document.getElementById('story-zone');
-        if (stage.stage_id === 1) {
-            storyZone.innerText = "🐷🥖"; // 第一關：小屁豬與麵包
-        } else if (stage.stage_id === 2) {
-            storyZone.innerText = "🚂 🌲"; // 第二關：火車旅行
-        }
+    const stage = gameData.games[currentStageIndex]; // 👈 stages 改成 games
+    const question = stage.questions[currentQuestionIndex];
+    
+    document.getElementById('stage-title').innerText = `${stage.name} (${currentQuestionIndex + 1}/10)`;
+    document.getElementById('progress').style.width = (currentQuestionIndex / 10) * 100 + "%";
+    document.getElementById('question-card').innerText = question.image;
+    
+    const storyZone = document.getElementById('story-zone');
+    if (stage.game_id === 1) { // 👈 stage_id 改成 game_id
+        storyZone.innerText = "🐷 🥖"; 
+    } else if (stage.game_id === 2) { // 👈 stage_id 改成 game_id
+        storyZone.innerText = "🚂 🌲"; 
+    }
 
         // 清空並重新渲染答案卡
         const optionsZone = document.getElementById('options-zone');
